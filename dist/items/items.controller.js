@@ -17,12 +17,13 @@ const common_1 = require("@nestjs/common");
 const items_service_1 = require("./items.service");
 const create_item_dto_1 = require("./dto/create-item.dto");
 const update_item_dto_1 = require("./dto/update-item.dto");
+const pagination_query_dto_1 = require("../common/dto/pagination-query.dto/pagination-query.dto");
 let ItemsController = class ItemsController {
     constructor(itemsService) {
         this.itemsService = itemsService;
     }
     findAll(paginationQuery) {
-        return this.itemsService.findAll();
+        return this.itemsService.findAll(paginationQuery);
     }
     findOne(id) {
         return this.itemsService.findOne(id);
@@ -42,14 +43,14 @@ __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [pagination_query_dto_1.PaginationQueryDto]),
     __metadata("design:returntype", void 0)
 ], ItemsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ItemsController.prototype, "findOne", null);
 __decorate([
@@ -64,14 +65,14 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_item_dto_1.UpdateItemDto]),
+    __metadata("design:paramtypes", [Number, update_item_dto_1.UpdateItemDto]),
     __metadata("design:returntype", void 0)
 ], ItemsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ItemsController.prototype, "remove", null);
 exports.ItemsController = ItemsController = __decorate([

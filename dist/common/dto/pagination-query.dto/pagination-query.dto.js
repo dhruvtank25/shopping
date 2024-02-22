@@ -9,32 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Item = void 0;
-const typeorm_1 = require("typeorm");
-const category_entity_1 = require("./category.entity");
-let Item = class Item {
-};
-exports.Item = Item;
+exports.PaginationQueryDto = void 0;
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class PaginationQueryDto {
+}
+exports.PaginationQueryDto = PaginationQueryDto;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsPositive)(),
+    (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
-], Item.prototype, "id", void 0);
+], PaginationQueryDto.prototype, "limit", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Item.prototype, "name", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Item.prototype, "brand", void 0);
-__decorate([
-    (0, typeorm_1.JoinTable)(),
-    (0, typeorm_1.ManyToMany)(type => category_entity_1.Category, (category) => category.items, {
-        cascade: true,
-    }),
-    __metadata("design:type", Array)
-], Item.prototype, "categories", void 0);
-exports.Item = Item = __decorate([
-    (0, typeorm_1.Entity)()
-], Item);
-//# sourceMappingURL=items.entities.js.map
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsPositive)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], PaginationQueryDto.prototype, "offset", void 0);
+//# sourceMappingURL=pagination-query.dto.js.map

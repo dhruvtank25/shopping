@@ -10,17 +10,28 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const items_controller_1 = require("./items/items.controller");
-const items_service_1 = require("./items/items.service");
 const items_module_1 = require("./items/items.module");
+const typeorm_1 = require("@nestjs/typeorm");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [items_module_1.ItemsModule],
-        controllers: [app_controller_1.AppController, items_controller_1.ItemsController],
-        providers: [app_service_1.AppService, items_service_1.ItemsService],
+        imports: [
+            items_module_1.ItemsModule,
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'postgres',
+                host: 'localhost',
+                port: 5432,
+                username: 'public_user',
+                password: 'pass123',
+                database: 'shopping',
+                autoLoadEntities: true,
+                synchronize: true,
+            }),
+        ],
+        controllers: [app_controller_1.AppController],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

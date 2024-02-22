@@ -1,58 +1,84 @@
 import { 
-    Body, 
-    HttpException, 
-    HttpStatus, 
     Injectable, 
-    NotFoundException, 
-    Param
+    NotFoundException
 } from '@nestjs/common';
 
 import { Item } from './entities/items.entities';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UpdateItemDto } from './dto/update-item.dto';
+import { CreateItemDto } from './dto/create-item.dto';
+import { Category } from './entities/category.entity';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto/pagination-query.dto';
 
 @Injectable()
 export class ItemsService {
-    private items : Item[] = [
-        {
-            id:1,
-            name: 'desktop',
-            brand: 'Dell',
-            categories: ['electronic', 'deigital']
-        }
-    ];
+
+    constructor(
+        @InjectRepository(Item)
+        private readonly itemRepository: Repository<Item>,
+        
+        @InjectRepository(Category)
+        private readonly categoryRepository: Repository<Category>,
+    ) {};
 
 
-
-    findAll(){
-       return this.items;
+    findAll(paginationQuery: PaginationQueryDto){
+        const { limit, offset} = paginationQuery;
+        return this.itemRepository.find({
+            relations:['categories'],
+            skip:offset,
+            take:limit,
+        });
     }
 
 
-    findOne(id: string){
-        const item =  this.items.find(item => item.id === +id );
+    async findOne(id: number){
+        const item =  await this.itemRepository.findOne({where : {id: id}, relations: ['categories']});
         if(!item){
             throw new NotFoundException(`item #${id} not found`);
         }
         return item;
     }
 
-    create(createItemDto: any){
-        this.items.push(createItemDto);
-        return createItemDto;
+    async create(createItemDto: CreateItemDto){
+        const categories = await Promise.all(
+            createItemDto.categories.map(name => this.preloadCategoryByName(name)),
+        );
+        const item = this.itemRepository.create({ 
+            ...createItemDto, 
+            categories,
+        });
+        return this.itemRepository.save(item);
     }
 
 
-    update(id: string, updateItemDto : any){
-        const exisitngItem = this.findOne(id)
-        if(exisitngItem){
-
+    async update(id: number, updateItemDto : UpdateItemDto){
+        const categories =  updateItemDto.categories && (await Promise.all(
+            updateItemDto.categories.map(name => this.preloadCategoryByName(name)),
+        ));
+        const item = await this.itemRepository.preload({ 
+            id: +id,
+            ...updateItemDto, 
+            categories,
+        });
+        if(!item){
+            throw new NotFoundException(`item #${id} not found`);
         }
+        return this.itemRepository.save(item);
     }
 
-    remove(id: string){
-        const itemIndex = this.items.findIndex(item => item.id === +id);
-        if(itemIndex >= 0){
-            this.items.splice(itemIndex, 1);
+    async remove(id: number){
+        const item = await this.findOne(id);
+        return this.itemRepository.remove(item);
+    }
+
+    private async preloadCategoryByName(name:string): Promise<Category> {
+        const existingCatgory= await this.categoryRepository.findOne({ where: {name : name} });
+        if (existingCatgory){
+            return existingCatgory;
         }
+        return this.categoryRepository.create({name});
     }
 
 } 

@@ -9,32 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Item = void 0;
+exports.Category = void 0;
 const typeorm_1 = require("typeorm");
-const category_entity_1 = require("./category.entity");
-let Item = class Item {
+const items_entities_1 = require("./items.entities");
+let Category = class Category {
 };
-exports.Item = Item;
+exports.Category = Category;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Item.prototype, "id", void 0);
+], Category.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Item.prototype, "name", void 0);
+], Category.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Item.prototype, "brand", void 0);
-__decorate([
-    (0, typeorm_1.JoinTable)(),
-    (0, typeorm_1.ManyToMany)(type => category_entity_1.Category, (category) => category.items, {
-        cascade: true,
-    }),
+    (0, typeorm_1.ManyToMany)(type => items_entities_1.Item, item => item.categories),
     __metadata("design:type", Array)
-], Item.prototype, "categories", void 0);
-exports.Item = Item = __decorate([
+], Category.prototype, "items", void 0);
+exports.Category = Category = __decorate([
     (0, typeorm_1.Entity)()
-], Item);
-//# sourceMappingURL=items.entities.js.map
+], Category);
+//# sourceMappingURL=category.entity.js.map
