@@ -13,14 +13,16 @@ const items_service_1 = require("./items.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const items_entities_1 = require("./entities/items.entities");
 const category_entity_1 = require("./entities/category.entity");
+const event_entity_1 = require("../events/entities/event.entity/event.entity");
 let ItemsModule = class ItemsModule {
 };
 exports.ItemsModule = ItemsModule;
 exports.ItemsModule = ItemsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([items_entities_1.Item, category_entity_1.Category])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([items_entities_1.Item, category_entity_1.Category, event_entity_1.Event])],
         controllers: [items_controller_1.ItemsController],
         providers: [items_service_1.ItemsService],
+        exports: [items_service_1.ItemsService]
     })
 ], ItemsModule);
 //# sourceMappingURL=items.module.js.map

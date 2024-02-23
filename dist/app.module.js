@@ -12,6 +12,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const items_module_1 = require("./items/items.module");
 const typeorm_1 = require("@nestjs/typeorm");
+const item_rating_module_1 = require("./item-rating/item-rating.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -29,6 +30,7 @@ exports.AppModule = AppModule = __decorate([
                 autoLoadEntities: true,
                 synchronize: true,
             }),
+            item_rating_module_1.ItemRatingModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

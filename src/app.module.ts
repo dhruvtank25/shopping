@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ItemsModule } from './items/items.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ItemRatingModule } from './item-rating/item-rating.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true, // disable it when you are in production environment
 
     }),
+    ItemRatingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

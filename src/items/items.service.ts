@@ -5,12 +5,12 @@ import {
 
 import { Item } from './entities/items.entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { CreateItemDto } from './dto/create-item.dto';
 import { Category } from './entities/category.entity';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto/pagination-query.dto';
-
+import { Event } from 'src/events/entities/event.entity/event.entity';
 @Injectable()
 export class ItemsService {
 
@@ -20,6 +20,9 @@ export class ItemsService {
         
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
+
+        private readonly connection:Connection,
+        
     ) {};
 
 
@@ -71,6 +74,31 @@ export class ItemsService {
     async remove(id: number){
         const item = await this.findOne(id);
         return this.itemRepository.remove(item);
+    }
+
+    async recommendItem(item: Item){
+        const queryRunner = this.connection.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            item.recommendation++;
+            const recommendEvent  = new Event();
+            recommendEvent.name =  'recommend_item';
+            recommendEvent.type = 'item';
+            recommendEvent.payload = {itemId: item.id};
+
+            await queryRunner.manager.save(item);
+            await queryRunner.manager.save(recommendEvent);
+            
+            await queryRunner.commitTransaction();
+        } catch(err) {
+            await queryRunner.rollbackTransaction()
+        } finally {
+            await queryRunner.release()
+        }
+
     }
 
     private async preloadCategoryByName(name:string): Promise<Category> {

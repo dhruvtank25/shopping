@@ -9,36 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Item = void 0;
+exports.Event = void 0;
 const typeorm_1 = require("typeorm");
-const category_entity_1 = require("./category.entity");
-let Item = class Item {
+let Event = class Event {
 };
-exports.Item = Item;
+exports.Event = Event;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Item.prototype, "id", void 0);
+], Event.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Item.prototype, "name", void 0);
+], Event.prototype, "type", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Item.prototype, "brand", void 0);
+], Event.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
-    __metadata("design:type", Number)
-], Item.prototype, "recommendation", void 0);
-__decorate([
-    (0, typeorm_1.JoinTable)(),
-    (0, typeorm_1.ManyToMany)(type => category_entity_1.Category, (category) => category.items, {
-        cascade: true,
-    }),
-    __metadata("design:type", Array)
-], Item.prototype, "categories", void 0);
-exports.Item = Item = __decorate([
+    (0, typeorm_1.Column)('json'),
+    __metadata("design:type", Object)
+], Event.prototype, "payload", void 0);
+exports.Event = Event = __decorate([
     (0, typeorm_1.Entity)()
-], Item);
-//# sourceMappingURL=items.entities.js.map
+], Event);
+//# sourceMappingURL=event.entity.js.map

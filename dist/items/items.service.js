@@ -18,10 +18,12 @@ const items_entities_1 = require("./entities/items.entities");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const category_entity_1 = require("./entities/category.entity");
+const event_entity_1 = require("../events/entities/event.entity/event.entity");
 let ItemsService = class ItemsService {
-    constructor(itemRepository, categoryRepository) {
+    constructor(itemRepository, categoryRepository, connection) {
         this.itemRepository = itemRepository;
         this.categoryRepository = categoryRepository;
+        this.connection = connection;
     }
     ;
     findAll(paginationQuery) {
@@ -63,6 +65,27 @@ let ItemsService = class ItemsService {
         const item = await this.findOne(id);
         return this.itemRepository.remove(item);
     }
+    async recommendItem(item) {
+        const queryRunner = this.connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            item.recommendation++;
+            const recommendEvent = new event_entity_1.Event();
+            recommendEvent.name = 'recommend_item';
+            recommendEvent.type = 'item';
+            recommendEvent.payload = { itemId: item.id };
+            await queryRunner.manager.save(item);
+            await queryRunner.manager.save(recommendEvent);
+            await queryRunner.commitTransaction();
+        }
+        catch (err) {
+            await queryRunner.rollbackTransaction();
+        }
+        finally {
+            await queryRunner.release();
+        }
+    }
     async preloadCategoryByName(name) {
         const existingCatgory = await this.categoryRepository.findOne({ where: { name: name } });
         if (existingCatgory) {
@@ -77,6 +100,7 @@ exports.ItemsService = ItemsService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(items_entities_1.Item)),
     __param(1, (0, typeorm_1.InjectRepository)(category_entity_1.Category)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        typeorm_2.Connection])
 ], ItemsService);
 //# sourceMappingURL=items.service.js.map
